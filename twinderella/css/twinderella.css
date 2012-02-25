@@ -1,0 +1,90 @@
+@import url(http://fonts.googleapis.com/css?family=Handlee);
+body {
+	margin-top:100px;
+	background-color:#8ec0e3;
+	cursor: url("../img/cursor.png"), auto;
+}
+#logo {
+	text-align:center;
+}
+#subhead {
+	text-align:center;
+}
+/*.ball {
+	position:absolute;
+	top:100px;
+	left:100px;
+	background-image: url("./img/ball.png")no-repeat center;
+}
+.ball:hover {
+	background: url("twinderella/img/ball.gif") no-repeat center;*/
+}
+footer {
+	font-family: 'Handlee', cursive;
+	font-size:20px;
+	position:fixed;
+	bottom:15px;
+	left:50%;
+	margin-left:-480px;
+}
+footer ul {
+	list-style-: none;	
+}
+footer ul li {
+	display: inline;
+}
+#artsicle {
+	padding: 0px;
+}
+#face {
+	padding: 0px;
+}
+#twitter {
+	font-size:30px;
+}
+#posterous {
+	font-size:30px;
+}
+footer ul li a img {
+	vertical-align:middle;
+}
+
+
+* {
+       margin: 0px;
+       padding: 0px;
+     }
+     div#shell {
+       display: block;
+       position: relative;
+       margin: 100px auto;
+       width: 318px;
+       height: 318px;
+     }
+     div#shell{
+       z-index: 1;
+     }
+     img#plax-logo {
+       position: absolute;
+       top: 125px;
+       left: 90px;
+       z-index: 3;
+     }
+     img#plax-sphere-1 {
+       position: absolute;
+       z-index: 4;
+       top: 189px;
+       left: 191px;
+     }
+     img#plax-sphere-2 {
+       position: absolute;
+       z-index: 2;
+       top: 49px;
+       left: 53px;
+     }
+     img#plax-sphere-3 {
+       position: absolute;
+       top: 35px;
+       left: 32px;
+       z-index: 1;
+     }
