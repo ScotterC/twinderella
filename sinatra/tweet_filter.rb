@@ -1,4 +1,7 @@
 require 'tweetstream'
+require 'json'
+require 'redis'
+require 'geokit'
 require File.join(File.dirname(__FILE__), 'tweet_store')
 
 TweetStream.configure do |config|
@@ -10,45 +13,44 @@ TweetStream.configure do |config|
   config.parser   = :yajl
 end
 
+Geokit::default_units = :miles
+Geokit::default_formula = :sphere
+
 STORE = TweetStore.new
-# @pic_urls = []
-# @screen_names = []
-TweetStream::Client.new.track('photo') do |status, client|
-  if status.entities && status.entities.key?(:media) && status.entities.media.first["type"] == "photo"
-    #@screen_names << status.user.screen_name
-    @pic_urls << status#.entities.media.first['media_url']
+redis = Redis.new
+REDIS_KEY = 'tweets'
 
-    STORE.push(
-      'id' => status[:id],
-      'text' => status.text,
-      'username' => status.user.screen_name,
-      'photo_url' => status.entities.media.first['media_url'],
-      'userid' => status.user[:id],
-      'name' => status.user.name,
-      'profile_image_url' => status.user.profile_image_url,
-      'received_at' => Time.new.to_i
-    )
+@statuses = []
+
+CURRENT_POSITION = "40.735726, -73.99507"
+#Geokit::LatLng.distance_between(CURRENT_POSITION, d).to_i < 200
+
+TweetStream::Client.new.on_error do |message|
+  puts message
+end.track('photo') do |status, client|
+  if status.key?(:entities) && status.entities.key?(:media) && status.entities.media.first["type"] == "photo" && status.key?(:geo) && status.geo != nil && status.geo.key?(:coordinates)
+    c = status.geo.coordinates
+    unless c.length > 1
+      c = c.join(', ')
+    end
+
+    if Geokit::LatLng.distance_between(CURRENT_POSITION, c).to_i < 500
+      redis.lpush(REDIS_KEY, {
+
+        'id' => status[:id],
+        'text' => status.text,
+
+        'username' => status.user.screen_name,
+        'photo_url' => status.entities.media.first['media_url'],
+        'userid' => status.user[:id],
+        'name' => status.user.name,
+        'profile_image_url' => status.user.profile_image_url,
+        'received_at' => Time.new.to_i
+
+      }.to_json)
+
+      @statuses << status
+      client.stop if @statuses.size >= 10
+    end
   end
-  #client.stop if @pic_urls.size >= 1
 end
-
-
-
-# TweetStream::Client.new(USERNAME, PASSWORD).track('lol') do |status|
-#   # Ignore replies. Probably not relevant in your own filter app, but we want
-#   # to filter out funny tweets that stand on their own, not responses.
-#   if status.text !~ /^@\w+/
-#     # Yes, we could just store the Status object as-is, since it's actually just a
-#     # subclass of Hash. But Twitter results include lots of fields that we don't
-#     # care about, so let's keep it simple and efficient for the web app.
-#     STORE.push(
-#       'id' => status[:id],
-#       'text' => status.text,
-#       'username' => status.user.screen_name,
-#       'userid' => status.user[:id],
-#       'name' => status.user.name,
-#       'profile_image_url' => status.user.profile_image_url,
-#       'received_at' => Time.new.to_i
-#     )
-#   end
-# end

@@ -3,10 +3,12 @@ require 'bundler/setup'
 require 'sinatra/base'
 require 'omniauth-facebook'
 require 'tweetstream'
+require 'ruby-debug'
 require File.expand_path('../database', __FILE__)
-
+require File.join(File.dirname(__FILE__), 'tweet_store')
 
 SCOPE = 'email,offline_access,user_photos'
+STORE = TweetStore.new
 
 class App < Sinatra::Base
 
@@ -22,7 +24,24 @@ class App < Sinatra::Base
     #redirect '/auth/facebook'
     erb "<a href='/auth/facebook'>Sign in with Facebook</a>"
   end
+
+  get '/tweets' do
+    #require 'ruby-debug/debugger'
+    # @tweets = STORE.tweets
+    # erb :tweets
+    erb "Hello World"
+  end
   
+  get '/latest' do
+    # We're using a Javascript variable to keep track of the time the latest
+    # tweet was received, so we can request only newer tweets here. Might want
+    # to consider using Last-Modified HTTP header as a slightly cleaner
+    # solution (but requires more jQuery code).
+    @tweets = STORE.tweets
+    @tweet_class = 'latest'  # So we can hide and animate
+    erb :latest, :layout => false
+  end
+
   # client-side flow
   get '/client-side' do
 

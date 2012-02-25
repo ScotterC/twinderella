@@ -1,1 +1,4 @@
-<%= @tweets %>
+<%# require 'ruby-debug/debugger' %>
+<% @tweets.each do |tweet| %>
+	<img src="<%= tweet.photo_url %>" />
+<% end %>
