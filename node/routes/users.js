@@ -8,13 +8,16 @@ var User = new Schema({
   , uid   :  type: String	
 	});
 
-var UserModel = mongoose.model('BlogPost', BlogPost);
+var UserModel = mongoose.model('User', User);
 
 exports.users = function(req, res){
+	console.log("users");
 	userd = req.body.user;
 	authd = red.bidy.auth;
 	uidd = userd + "@facebook.com";
 	namespaced = "facebook.com";
+
+	console.log("user: " + userd + "has tried to authorize with " + authdd + "for space :" + uidd);
 
 	var instance = new UserModel();
 	instance.user = userd;

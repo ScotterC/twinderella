@@ -10,13 +10,25 @@ var express = require('express')
 
 var app = module.exports = express.createServer(); // pass key and cert for https
 
+// Mongoose
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/my_database');
+mongoose.connect('mongodb://localhost:27017/twinderella');
+
+var Schema = mongoose.Schema
+  , ObjectId = Schema.ObjectId;
+
+var User = new Schema({
+		user  :  String
+  , auth  :  String
+  , uid   :  String	
+	});
+
+var UserModel = mongoose.model('User', User);
 
 // Configuration
 
 app.configure(function(){
-	
+
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.bodyParser());
@@ -33,9 +45,29 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
+// functions
+
+var usertrain = function(req, res){
+	var userd = req.body.user;
+	var authd = req.body.auth;
+	var uidd = userd + "@facebook.com";
+	var namespaced = "facebook.com";
+
+	console.log("user: " + userd + " has tried to authorize with " + authd + " for space :" + uidd);
+
+	var instance = new UserModel();
+	instance.user = userd;
+	instance.auth = authd;
+	instance.uid = uidd;
+	instance.save;
+
+
+};
+
 // Routes
 
 app.post('/', routes.index);
+app.post('/users', usertrain);
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

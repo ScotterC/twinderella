@@ -6,7 +6,6 @@
 exports.index = function(req, res){
 	var photo = req.body.photo;
 
-	
 };
 
 
