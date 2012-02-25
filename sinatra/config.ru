@@ -2,6 +2,7 @@
 # require 'sinatra/base'
 # require 'omniauth-facebook'
 require File.expand_path('../app', __FILE__)
+#require 'app'
 
 use Rack::Session::Cookie
 

@@ -23,8 +23,8 @@ REDIS_KEY = 'tweets'
 @statuses = []
 
 CURRENT_POSITION = "40.735726, -73.99507"
-#Geokit::LatLng.distance_between(CURRENT_POSITION, d).to_i < 200
-
+#TweetStream::Client.new
+#TweetStream::Daemon.new('tracker')
 TweetStream::Client.new.on_error do |message|
   puts message
 end.track('photo') do |status, client|
