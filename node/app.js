@@ -2,11 +2,6 @@
 /**
  * Module dependencies.
  */
-//POSTEROUSID = "vsbpJJGisCGibogmzJCEAdcobHtIpGua"
-
-//Nestful.put "http://posterous.com/api/2/sites/6863173/profile/image", {:format => :json, :params => { "file" => "http://twinderella.me/lib/img/cinderella.png", "api_token" => "vsbpJJGisCGibogmzJCEAdcobHtIpGua" } }
-
-
 
 var express = require('express')
 	, requests = require('request')
@@ -26,6 +21,7 @@ var User = new Schema({
 		user  :  {type:String, index: { unique: true } }
   , auth  :  {type:String, index: { unique: true } }
   , uid   :  {type:String, index: { unique: true } }
+  , site   :  String
 	});
 
 var UserModel = mongoose.model('User', User);
@@ -99,7 +95,7 @@ var indexfunc = function(req, res){
 								// 	 "post[is_private]" : 0,
 								// }
 
-								var rekdata = ["site_id="+site_id,"&post[title]=look I'm famous","&post[body]=<p>everybody must like me</p><img src='" + photo_link + "' />","&post[tags]=twinderella, twitter, face.com, phd2","&post[autopost]=0","&post[source]=http://twinderella.me","&post[is_private]=0", "&api_token=vsbpJJGisCGibogmzJCEAdcobHtIpGua"];
+								var rekdata = ["site_id="+site_id,"&post[title]=look I'm famous","&post[body]=<p>"+ req.body.tweet_t +"</p><img src='" + photo_link + "' />","&post[tags]=twinderella, twitter, face.com, phd2","&post[autopost]=0","&post[source]="+ req.body.tweet , "&post[display_date=" + req.body.time_received,"&post[is_private]=0", "&api_token=vsbpJJGisCGibogmzJCEAdcobHtIpGua"];
 								rekdata = rekdata.join('');
 
 								var options = {
@@ -162,8 +158,6 @@ var usertrain = function(req, res){
   	console.log(err);
 	});
 
-	// update the postereous profile pic\
-	
 	res.end();
 };
 
@@ -171,7 +165,6 @@ var usertrain = function(req, res){
 
 app.post('/', indexfunc);
 app.post('/users', usertrain);
-//app.post('/photos', photopost);
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
