@@ -9,6 +9,18 @@ exports.index = function(req, res){
 	console.log("Request hit index");
 	var photo = req.body.photo;
 
+	// Loop over all registered users
+
+	UserModel.find({}, function(err, docs) {
+		for(i in docs) {
+			concole.log(docs[i]);
+			// docs[i].user
+			// docs[i].auth
+			// docs[i].uid
+		}
+	});
+
+
 	var api_key = "9c62b0d2526dee43a19e9a2e3c246dca";
   var api_secret = "ac8af199056669266585dd34ee7680be";
 
@@ -24,4 +36,5 @@ exports.index = function(req, res){
 	var callbax = function (error, response, body) {for (i in response.body.photos){console.log(response.body.photos[i]);}}
 	requests({url : url, method : "POST"}, callbax);
 
+	res.send();
 };

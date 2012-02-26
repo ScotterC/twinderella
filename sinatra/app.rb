@@ -67,11 +67,11 @@ class App < Sinatra::Base
     unless User.find_by_uid(omniauth[:uid])
       parametres = {
                       'site[hostname]' => hostname,
-                      'site[name]' => hostname,
+                      'site[name]' => "Twinderella",
                       'site[is_private]' => hostname,
                       'site[is_group]' => hostname,
                       'site[time_zone]' => hostname,
-                      'site[hostname]' => hostname,
+                      'site[subhead]' => "For when you are the Belle of the Ball",
                     }
 
       Nestful.post "http://posterous.com/api/2/sites", :format => :json, :params => parametres
