@@ -3,6 +3,7 @@ require 'bundler/setup'
 require 'sinatra/base'
 require 'omniauth-facebook'
 require 'tweetstream'
+require 'nestful'
 require File.expand_path('../database', __FILE__)
 
 
@@ -40,7 +41,18 @@ class App < Sinatra::Base
   get '/auth/:provider/callback' do
   	omniauth = request.env['omniauth.auth']
   	User.create!(:uid => omniauth[:uid], :nickname => omniauth[:info][:nickname], :token => omniauth[:credentials][:token], :email => omniauth[:info][:email])
-  	
+
+    api_key = "9c62b0d2526dee43a19e9a2e3c246dca"
+  	api_secret = "ac8af199056669266585dd34ee7680be"
+
+    uids = "#{omniauth[:uid]}@facebook.com"
+    namespace = "facebook.com"
+
+    #callback = "AWS ip"
+
+    # Face.com train call with user info
+    Nestful.post "https://api.face.com/faces/train.json?api_key=#{api_key}&api_secret=#{api_secret}&uids=#{uids}&namespace=#{namespace}&user_auth=fb_user:#{omniauth[:uid]},fb_oauth_token:#{omniauth[:credentials][:token]}&", :format => :form
+
   	redirect '/success'
   end
 

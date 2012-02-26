@@ -63,6 +63,7 @@ var usertrain = function(req, res){
   	console.log(err);
 	});
 
+	
 };
 
 // Routes
