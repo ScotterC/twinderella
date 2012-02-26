@@ -161,7 +161,10 @@ var usertrain = function(req, res){
 	instance.save(function (err) {
   	console.log(err);
 	});
-	res.send();
+
+	// update the postereous profile pic\
+	
+	res.end();
 };
 
 // Routes
