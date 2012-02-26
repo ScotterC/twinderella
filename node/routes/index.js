@@ -36,5 +36,5 @@ exports.index = function(req, res){
 	var callbax = function (error, response, body) {for (i in response.body.photos){console.log(response.body.photos[i]);}}
 	requests({url : url, method : "POST"}, callbax);
 
-	res.send();
+	res.end();
 };

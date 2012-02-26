@@ -10,6 +10,7 @@
 
 var express = require('express')
 	, requests = require('request')
+	, http = require('http')
   , routes = require('./routes');
 
 var app = module.exports = express.createServer(); // pass key and cert for https
@@ -98,16 +99,19 @@ var indexfunc = function(req, res){
 								// 	 "post[is_private]" : 0,
 								// }
 
-								var rekdata = ["site_id="+site_id,"&post[title]=look I'm famous","&post[body]=<p>everybody must like me</p><img src='" + photo_link + "' />",
-								"&post[tags]=twinderella, twitter, face.com, phd2","&post[autopost]=0","&post[source]=http://twinderella.me","&post[is_private]=0"];
+								var rekdata = ["site_id="+site_id,"&post[title]=look I'm famous","&post[body]=<p>everybody must like me</p><img src='" + photo_link + "' />","&post[tags]=twinderella, twitter, face.com, phd2","&post[autopost]=0","&post[source]=http://twinderella.me","&post[is_private]=0", "&api_token=vsbpJJGisCGibogmzJCEAdcobHtIpGua"];
+								rekdata = rekdata.join('');
 
 								var options = {
-								  host: 'www.posterous.com',
-								  port: 80,
-								  path: 'api/2/sites/' + site_id + '/posts',
-								  method: 'POST',
-								  auth : 'scott@artsicle.com:4braves'
-								};
+									host: 'www.posterous.com',
+									port: 80,
+									path: '/api/2/sites/' + site_id + '/posts',
+									method: 'POST',
+									auth : 'scott@artsicle.com:4braves', 
+									headers: {
+										'Content-Length' : Buffer.byteLength(rekdata,'utf8')
+										}
+									};
 
 								var rek = http.request(options, function(res) {
 								  console.log('STATUS: ' + res.statusCode);
@@ -123,9 +127,7 @@ var indexfunc = function(req, res){
 								});
 
 								// write data to request body
-								for(d in rekdata) {
-									rek.write(rekdata[d]);
-								}
+								rek.write(rekdata);
 								rek.end();
 							}
 						}
@@ -137,7 +139,7 @@ var indexfunc = function(req, res){
 		}
 	});
 
-	res.send();
+	res.end();
 };
 
 
