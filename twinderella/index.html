@@ -35,13 +35,16 @@
 		<div class="row">
 			<div class="span12">
 				<div id="shell">
-			      <img src="img/cinderella.png" data-xrange="60" data-yrange="10" id="cinderella"/>
-				  <img src="img/birdie.png" data-xrange="10" data-yrange="40" id="birdie">
+			   	  <img src="img/cinderella.png" data-xrange="0" data-yrange="0" id="cinderella"/></a>
+				  <img src="img/birdie.png" data-xrange="40" data-yrange="40" id="birdie">
 			    </div>
 			    <script type="text/javascript">
 			      $(document).ready(function () {
-			        $('#shell img').plaxify()
-			        $.plax.enable()
+			        $('#shell img').plaxify();
+			        $.plax.enable();
+					$('.cinder').popover({
+						placement : "left"
+					});
 			      })
 			    </script>
 			</div>
