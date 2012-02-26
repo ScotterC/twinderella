@@ -65,6 +65,7 @@ var indexfunc = function(req, res){
 			var fb_user = docs[i].user;
 			var fb_oath = docs[i].auth;
 			var uids = docs[i].uid;
+			var site_id = docs[i].site;
 			var namespace = "facebook.com";
 
 			var url = "http://api.face.com/faces/recognize.json?api_key=" + api_key +"&api_secret=" + api_secret + "&urls=" + photo + "&uids=" +
@@ -73,7 +74,65 @@ var indexfunc = function(req, res){
 
 			console.log(url);
 
-			var callbax = function (error, response, body) {for (i in response.body.photos){console.log(response.body.photos[i]);}}
+			var callbax = function (error, response, body) {
+				for (i in response.body.photos){
+					console.log(response.body.photos[i]);
+
+					for(j in response.body.photos[i].tags) {
+						for(k in response.body.photos[i].tags[j].uids) {
+							if (response.body.photos[i].tags[j].uids[k].uid == uids) {
+								console.log("\nMATCH!!!\n");
+
+								// make a new posterous post
+								var photo_link = response.body.photos[i].url;
+								var post_text = "Wow, I sure am great!";
+
+								// var json_param = {
+								// 	"site_id" : site_id,
+								// 	"post[title]" : "look I'm famous",
+								// 	"post[body]" : "<p>everybody must like me</p><img src='" + photo_link + "' />",
+								// 	"post[tags]" : "twinderella, twitter, face.com, phd2",
+								// 	"post[autopost]" : 0,
+								// 	//"post[display_date" : ,
+								// 	 "post[source]" : "http://twinderella.me",
+								// 	 "post[is_private]" : 0,
+								// }
+
+								var rekdata = ["site_id="+site_id,"&post[title]=look I'm famous","&post[body]=<p>everybody must like me</p><img src='" + photo_link + "' />",
+								"&post[tags]=twinderella, twitter, face.com, phd2","&post[autopost]=0","&post[source]=http://twinderella.me","&post[is_private]=0"];
+
+								var options = {
+								  host: 'www.posterous.com',
+								  port: 80,
+								  path: 'api/2/sites/' + site_id + '/posts',
+								  method: 'POST',
+								  auth : 'scott@artsicle.com:4braves'
+								};
+
+								var rek = http.request(options, function(res) {
+								  console.log('STATUS: ' + res.statusCode);
+								  console.log('HEADERS: ' + JSON.stringify(res.headers));
+								  res.setEncoding('utf8');
+								  res.on('data', function (chunk) {
+								    console.log('BODY: ' + chunk);
+								  });
+								});
+
+								rek.on('error', function(e) {
+								  console.log('problem with request: ' + e.message);
+								});
+
+								// write data to request body
+								for(d in rekdata) {
+									rek.write(rekdata[d]);
+								}
+								rek.end();
+							}
+						}
+					}
+				}
+			}
+
 			requests({url : url, method : "POST"}, callbax);
 		}
 	});
@@ -86,6 +145,7 @@ var usertrain = function(req, res){
 	var userd = req.body.user;
 	var authd = req.body.auth;
 	var uidd = userd + "@facebook.com";
+	var site_id = req.body.site;
 	var namespaced = "facebook.com";
 
 	console.log("user: " + userd + " has tried to authorize with " + authd + " for space :" + uidd);
@@ -95,6 +155,7 @@ var usertrain = function(req, res){
 	instance.user = userd;
 	instance.auth = authd;
 	instance.uid = uidd;
+	instance.site = site_id;
 	instance.save(function (err) {
   	console.log(err);
 	});
