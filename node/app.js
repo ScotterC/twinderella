@@ -18,9 +18,9 @@ var Schema = mongoose.Schema
   , ObjectId = Schema.ObjectId;
 
 var User = new Schema({
-		user  :  String
-  , auth  :  String
-  , uid   :  String	
+		user  :  {type:String, index: { unique: true } }
+  , auth  :  {type:String, index: { unique: true } }
+  , uid   :  {type:String, index: { unique: true } }
 	});
 
 var UserModel = mongoose.model('User', User);
@@ -59,9 +59,11 @@ var usertrain = function(req, res){
 	instance.user = userd;
 	instance.auth = authd;
 	instance.uid = uidd;
-	instance.save;
+	instance.save(function (err) {
+  	console.log(err);
+	});
 
-
+	
 };
 
 // Routes

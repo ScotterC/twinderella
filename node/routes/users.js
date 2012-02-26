@@ -25,5 +25,10 @@ exports.users = function(req, res){
 	instance.uid = uidd;
 	instance.save;
 
+	UserModel.find({}, function(err, docs) {
+		for(i in docs) {
+			concole.log(i);
+		}
+	})
 
 };
