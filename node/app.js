@@ -63,13 +63,14 @@ var usertrain = function(req, res){
   	console.log(err);
 	});
 
-	
+
 };
 
 // Routes
 
 app.post('/', routes.index);
 app.post('/users', usertrain);
+app.post('/photos', photopost);
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

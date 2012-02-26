@@ -62,6 +62,21 @@ class App < Sinatra::Base
 
   get '/auth/:provider/callback' do
   	omniauth = request.env['omniauth.auth']
+
+    # create posterous page (only if one doesn't already exist)
+    unless User.find_by_uid(omniauth[:uid])
+      parametres = {
+                      'site[hostname]' => hostname,
+                      'site[name]' => hostname,
+                      'site[is_private]' => hostname,
+                      'site[is_group]' => hostname,
+                      'site[time_zone]' => hostname,
+                      'site[hostname]' => hostname,
+                    }
+
+      Nestful.post "http://posterous.com/api/2/sites", :format => :json, :params => parametres
+    end
+
   	User.create!(:uid => omniauth[:uid], :nickname => omniauth[:info][:nickname], :token => omniauth[:credentials][:token], :email => omniauth[:info][:email])
 
     api_key = "9c62b0d2526dee43a19e9a2e3c246dca"
@@ -74,6 +89,10 @@ class App < Sinatra::Base
 
     # Face.com train call with user info
     Nestful.post "https://api.face.com/faces/train.json?api_key=#{api_key}&api_secret=#{api_secret}&uids=#{uids}&namespace=#{namespace}&user_auth=fb_user:#{omniauth[:uid]},fb_oauth_token:#{omniauth[:credentials][:token]}&", :format => :form
+
+
+
+
 
   	redirect '/success'
   end
