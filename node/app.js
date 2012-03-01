@@ -52,8 +52,8 @@ var indexfunc = function(req, res){
 	console.log("Request hit index");
 	var photo = req.body.photo;
 	
-	var api_key = "9c62b0d2526dee43a19e9a2e3c246dca";
-  var api_secret = "ac8af199056669266585dd34ee7680be";
+	var api_key = "[API]";
+	var api_secret = "[API]";
 	// Loop over all registered users
 
 	UserModel.find({}, function(err, docs) {
